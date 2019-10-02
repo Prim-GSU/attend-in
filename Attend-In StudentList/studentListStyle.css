@@ -1,0 +1,85 @@
+body{
+	background-color: #e9faff;
+	font-family: "Trebuchet MS";
+}
+
+ul.navBar{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+	background-color: #4272d7;
+	color: white;
+}
+
+ul.navBar li {
+	float: left;
+}
+
+ul.navBar li a {
+	display: block;
+	padding: 20px;
+	text-decoration: none;
+}
+
+ul.navBar li a:visited {
+	color: white;
+}
+ul.navBar li a:hover {
+	background-color: #333333;
+	-webkit-transition: all 0.4s;
+	-o-transition: all 0.4s;
+	-moz-transition: all 0.4s;
+	transition: all 0.4s;
+}
+
+.addDrop {
+	text-align: center;
+}
+
+.addDropBtns {
+	box-shadow: 0 3px 20px 0 rgba(0,0,0,.2);
+	border: none;
+	background-color: #4272d7;
+	padding: 15px 32px;
+	color: white;
+}
+
+.addDropBtns:hover {
+	background-color: #333333;
+	-webkit-transition: all 0.4s;
+	-o-transition: all 0.4s;
+	-moz-transition: all 0.4s;
+	transition: all 0.4s;
+}
+
+.pickDate {
+	text-align: center;
+}
+
+.selectMonth, .selectDay, .selectYear {
+	font-size: 16px;
+	padding: 10px;
+	color: #808080;
+}
+
+.students {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 60%;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.students td, .students th {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.students th {
+	background-color: #4272d7;
+	color: white;
+}
+.students td {
+	background-color: white;
+}
