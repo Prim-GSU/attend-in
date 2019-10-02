@@ -20,6 +20,7 @@ ul.navBar li a {
 	display: block;
 	padding: 20px;
 	text-decoration: none;
+	color: white;
 }
 
 ul.navBar li a:visited {
