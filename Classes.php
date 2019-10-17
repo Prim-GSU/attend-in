@@ -8,16 +8,14 @@ function console_log($output, $with_script_tags = true) {
     }
     echo $js_code;
 }
-class Student{
+
+class Student implements \JsonSerializable{
 	private $tid;
 	public function set_tid($tid){$this->tid =  $tid;}
 	public function get_tid(){return $this->tid;}
 	private $loginid;
 	public function set_loginid($loginid){$this->loginid =  $loginid;}
 	public function get_loginid(){return $this->loginid;}
-	private $username;
-	public function set_username($username){$this->username =  $username;}
-	public function get_username(){return $this->username;}
 	private $lastname;
 	public function set_lastname($lastname){$this->lastname =  $lastname;}
 	public function get_lastname(){return $this->lastname;}
@@ -30,14 +28,19 @@ class Student{
 	public function __construct(){
 		if(func_get_arg(0)){$this->tid = func_get_arg(0);}
 		if(func_get_arg(1)){$this->loginid = func_get_arg(1);}
-		if(func_get_arg(2)){$this->username = func_get_arg(2);}
-		if(func_get_arg(3)){$this->lastname = func_get_arg(3);}
-		if(func_get_arg(4)){$this->firstname = func_get_arg(4);}
-		if(func_get_arg(5)){$this->token = func_get_arg(5);}
+		if(func_get_arg(2)){$this->lastname = func_get_arg(2);}
+		if(func_get_arg(3)){$this->firstname = func_get_arg(3);}
+		if(func_get_arg(4)){$this->token = func_get_arg(4);}
+	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
 	}
 }
 
-class Professor{
+class Professor implements \JsonSerializable{
 	private $tid;
 	public function set_tid($tid){$this->tid =  $tid;}
 	public function get_tid(){return $this->tid;}
@@ -64,9 +67,15 @@ class Professor{
 		if(func_get_arg(4)){$this->firstname = func_get_arg(4);}
 		if(func_get_arg(5)){$this->token = func_get_arg(5);}
 	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
+	}
 }
 
-class Course{
+class Course implements \JsonSerializable{
 	private $tid;
 	public function set_tid($tid){$this->tid =  $tid;}
 	public function get_tid(){return $this->tid;}
@@ -81,9 +90,15 @@ class Course{
 		if(func_get_arg(1)){$this->courseid = func_get_arg(1);}
 		if(func_get_arg(2)){$this->coursename = func_get_arg(2);}
 	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
+	}
 }
 
-class Class_{
+class Section implements \JsonSerializable{
 	private $tid;
 	public function set_tid($tid){$this->tid =  $tid;}
 	public function get_tid(){return $this->tid;}
@@ -104,28 +119,40 @@ class Class_{
 		if(func_get_arg(4)){$this->professorid = func_get_arg(4);}
 		if(func_get_arg(5)){$this->courseid = func_get_arg(5);}
 	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
+	}
 }
 
-class Roll{
+class Roll implements \JsonSerializable{
 	private $tid;
 	public function set_tid($tid){$this->tid =  $tid;}
 	public function get_tid(){return $this->tid;}
-	private $classid;
-	public function set_classid($classid){$this->classid =  $classid;}
-	public function get_classid(){return $this->classid;}
+	private $sectionid;
+	public function set_sectionid($sectionid){$this->sectionid =  $sectionid;}
+	public function get_sectionid(){return $this->sectionid;}
 	private $studentid;
 	public function set_studentid($studentid){$this->studentid =  $studentid;}
 	public function get_studentid(){return $this->studentid;}
 	public function __construct(){
 		if(func_get_arg(0)){$this->tid = func_get_arg(0);}
-		if(func_get_arg(1)){$this->classid = func_get_arg(1);}
+		if(func_get_arg(1)){$this->sectionid = func_get_arg(1);}
 		if(func_get_arg(2)){$this->studentid = func_get_arg(2);}
-		if(func_get_arg(3)){$this->classid = func_get_arg(3);}
+		if(func_get_arg(3)){$this->sectionid = func_get_arg(3);}
 		if(func_get_arg(4)){$this->studentid = func_get_arg(4);}
+	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
 	}
 }
 
-class Login{
+class Login implements \JsonSerializable{
 	private $tid;
 	public function set_tid($tid){$this->tid =  $tid;}
 	public function get_tid(){return $this->tid;}
@@ -165,15 +192,21 @@ class Login{
 		if(func_get_arg(8)){$this->token = func_get_arg(8);}
 		if(func_get_arg(9)){$this->rollid = func_get_arg(9);}
 	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
+	}
 }
 
-class Verify{
+class Verify implements \JsonSerializable{
 	private $tid;
 	public function set_tid($tid){$this->tid =  $tid;}
 	public function get_tid(){return $this->tid;}
-	private $classid;
-	public function set_classid($classid){$this->classid =  $classid;}
-	public function get_classid(){return $this->classid;}
+	private $sectionid;
+	public function set_sectionid($sectionid){$this->sectionid =  $sectionid;}
+	public function get_sectionid(){return $this->sectionid;}
 	private $verifycode;
 	public function set_verifycode($verifycode){$this->verifycode =  $verifycode;}
 	public function get_verifycode(){return $this->verifycode;}
@@ -185,21 +218,27 @@ class Verify{
 	public function get_token(){return $this->token;}
 	public function __construct(){
 		if(func_get_arg(0)){$this->tid = func_get_arg(0);}
-		if(func_get_arg(1)){$this->classid = func_get_arg(1);}
+		if(func_get_arg(1)){$this->sectionid = func_get_arg(1);}
 		if(func_get_arg(2)){$this->verifycode = func_get_arg(2);}
 		if(func_get_arg(3)){$this->datetimeset = func_get_arg(3);}
 		if(func_get_arg(4)){$this->token = func_get_arg(4);}
-		if(func_get_arg(5)){$this->classid = func_get_arg(5);}
+		if(func_get_arg(5)){$this->sectionid = func_get_arg(5);}
+	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
 	}
 }
 
-class SetCourse{
+class SetCourse implements \JsonSerializable{
 	private $tid;
 	public function set_tid($tid){$this->tid =  $tid;}
 	public function get_tid(){return $this->tid;}
-	private $classid;
-	public function set_classid($classid){$this->classid =  $classid;}
-	public function get_classid(){return $this->classid;}
+	private $sectionid;
+	public function set_sectionid($sectionid){$this->sectionid =  $sectionid;}
+	public function get_sectionid(){return $this->sectionid;}
 	private $professorid;
 	public function set_professorid($professorid){$this->professorid =  $professorid;}
 	public function get_professorid(){return $this->professorid;}
@@ -211,12 +250,18 @@ class SetCourse{
 	public function get_verifycode(){return $this->verifycode;}
 	public function __construct(){
 		if(func_get_arg(0)){$this->tid = func_get_arg(0);}
-		if(func_get_arg(1)){$this->classid = func_get_arg(1);}
+		if(func_get_arg(1)){$this->sectionid = func_get_arg(1);}
 		if(func_get_arg(2)){$this->professorid = func_get_arg(2);}
 		if(func_get_arg(3)){$this->classset = func_get_arg(3);}
 		if(func_get_arg(4)){$this->verifycode = func_get_arg(4);}
-		if(func_get_arg(5)){$this->classid = func_get_arg(5);}
+		if(func_get_arg(5)){$this->sectionid = func_get_arg(5);}
 		if(func_get_arg(6)){$this->professorid = func_get_arg(6);}
+	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
 	}
 }
 
