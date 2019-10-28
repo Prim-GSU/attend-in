@@ -116,8 +116,6 @@ class Section implements \JsonSerializable{
 		if(func_get_arg(1)){$this->courseid = func_get_arg(1);}
 		if(func_get_arg(2)){$this->professorid = func_get_arg(2);}
 		if(func_get_arg(3)){$this->section = func_get_arg(3);}
-		if(func_get_arg(4)){$this->professorid = func_get_arg(4);}
-		if(func_get_arg(5)){$this->courseid = func_get_arg(5);}
 	}
     public function jsonSerialize()
     {
@@ -141,8 +139,6 @@ class Roll implements \JsonSerializable{
 		if(func_get_arg(0)){$this->tid = func_get_arg(0);}
 		if(func_get_arg(1)){$this->sectionid = func_get_arg(1);}
 		if(func_get_arg(2)){$this->studentid = func_get_arg(2);}
-		if(func_get_arg(3)){$this->sectionid = func_get_arg(3);}
-		if(func_get_arg(4)){$this->studentid = func_get_arg(4);}
 	}
     public function jsonSerialize()
     {
@@ -190,7 +186,6 @@ class Login implements \JsonSerializable{
 		if(func_get_arg(6)){$this->logindate = func_get_arg(6);}
 		if(func_get_arg(7)){$this->result = func_get_arg(7);}
 		if(func_get_arg(8)){$this->token = func_get_arg(8);}
-		if(func_get_arg(9)){$this->rollid = func_get_arg(9);}
 	}
     public function jsonSerialize()
     {
@@ -222,7 +217,6 @@ class Verify implements \JsonSerializable{
 		if(func_get_arg(2)){$this->verifycode = func_get_arg(2);}
 		if(func_get_arg(3)){$this->datetimeset = func_get_arg(3);}
 		if(func_get_arg(4)){$this->token = func_get_arg(4);}
-		if(func_get_arg(5)){$this->sectionid = func_get_arg(5);}
 	}
     public function jsonSerialize()
     {
@@ -254,8 +248,6 @@ class SetCourse implements \JsonSerializable{
 		if(func_get_arg(2)){$this->professorid = func_get_arg(2);}
 		if(func_get_arg(3)){$this->classset = func_get_arg(3);}
 		if(func_get_arg(4)){$this->verifycode = func_get_arg(4);}
-		if(func_get_arg(5)){$this->sectionid = func_get_arg(5);}
-		if(func_get_arg(6)){$this->professorid = func_get_arg(6);}
 	}
     public function jsonSerialize()
     {
@@ -265,4 +257,29 @@ class SetCourse implements \JsonSerializable{
 	}
 }
 
-?>
+class StudentAttendance implements \JsonSerializable{
+	private $tid;
+	public function set_tid($tid){$this->tid =  $tid;} //student's tid
+	public function get_tid(){return $this->tid;}
+	private $lastname;
+	public function set_lastname($lastname){$this->lastname =  $lastname;}
+	public function get_lastname(){return $this->lastname;}
+	private $firstname;
+	public function set_firstname($firstname){$this->firstname =  $firstname;}
+	public function get_firstname(){return $this->firstname;}
+	private $code;
+	public function set_code($token){$this->code =  $code;}
+	public function get_code(){return $this->code;}
+	public function __construct(){
+		if(func_get_arg(0)){$this->tid = func_get_arg(0);}
+		if(func_get_arg(2)){$this->lastname = func_get_arg(1);}
+		if(func_get_arg(3)){$this->firstname = func_get_arg(2);}
+		if(func_get_arg(4)){$this->code = func_get_arg(3);}
+	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
+	}
+}?>

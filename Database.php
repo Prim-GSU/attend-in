@@ -15,13 +15,18 @@ if ($db->connect_error) {
 /*CREATE*/
 
 
-function insertStudent($student){
+function dbFlush(){
     global $db;
-    do {
+    do{
         if ($res = $db->store_result()) {
           $res->free();
         }
-       } while ($db->more_results() && $db->next_result());
+    } while ($db->more_results() && $db->next_result());
+}
+
+function insertStudent($student){
+    global $db;
+    dbFlush();
     $query = 'CALL addStudent(\'' . $student->get_loginid() . '\',\'' . $student->get_lastname() . '\',\'' . 
         $student->get_firstname() . '\',\'' . $student->get_token() . '\')';    
     $result = $db->query($query);
@@ -33,13 +38,24 @@ function insertStudent($student){
 /*READ*/
 function getStudentByTid($tid){
     global $db;
-    $query = 'CALL getStudentbyTid(\'' . $tid .'\')';
+    $query = 'CALL getStudentByTid(\'' . $tid .'\')';
     $result = $db->query($query);
     if($result->num_rows > 0){
         $row = $result->fetch_array();
         return new Student($tid, $row[0], $row[1], $row[2], $row[3]);
     }
     return new Student(null, null, null, null, null);
+}
+
+function getProfessorByTid($tid){
+    global $db;
+    $query = 'CALL getProfessorByTid(\'' . $tid .'\')';
+    $result = $db->query($query);
+    if($result->num_rows > 0){
+        $row = $result->fetch_array();
+        return new Student($tid, $row[0], $row[1], $row[2], $row[3], $row[4]);
+    }
+    return new Student(null, null, null, null, null, null);    
 }
 
 function getStudentByLoginid($loginid){
@@ -53,40 +69,83 @@ function getStudentByLoginid($loginid){
     return new Student(null, null, null, null, null);
 }
 
-function getCart($userId){
+/*function getStudentByTid($tid){
     global $db;
-    $cart;
-    $query = "SELECT id, saleComplete from Cart where userid = $userId and saleComplete <> 1";
+    $query = 'CALL getSutdentByTid(\'' . $tid .'\')';
     $result = $db->query($query);
     if($result->num_rows > 0){
         $row = $result->fetch_array();
-        $cart = new Cart($row[0], $userId, $row[1]);
+        return new Student($tid, $row[0], $row[1], $row[2], $row[3]);
+    }
+    return new Student(null, null, null, null, null);
+}
+*/
+
+function getProfessorByLoginid($loginid){
+    global $db;
+    $query = 'CALL getProfessorByLoginid(\'' . $loginid .'\')';
+    $result = $db->query($query);
+    if($result->num_rows > 0){
+        $row = $result->fetch_array();
+        return new Professor($tid, $row[0], $row[1], $row[2], $row[3], $row[4]);
+    }
+    return new Professor(null, null, null, null, null, null);
+}
+
+function getClassListByProfessorTid($tid){
+    global $db;
+    dbFlush();
+    $ret = array();
+    $query = 'CALL getClassListByProfessorTid(\'' . $tid . '\')';
+    $result = $db->query($query);
+
+    if($result->num_rows > 0){
+        while($row = $result->fetch_array()){
+            $section = new section($row[0], $row[1], $tid, $row[2]);
+            $professor->jsonSerialize();
+        }
+        $ret[] = $professor;
     }
     else{
-        $cart = new Cart(-1, $userId, 0);
-        $cart = addCart($cart);
+        $ret[] = new Professor(null, null, null, null, null, null);
     }
-    $cart = getCartItems($cart);
-    return $cart;
+    return $ret;
 }
 
-/*UPDATE*/
-function completeSale($cartId){
+function setClass($tid, $hashtime){
     global $db;
-    $query = "update Cart set saleComplete = 1 where id = $cartId";
-    $db->query($query);
+    dbFlush();
+    $ret = array();
+    $query = 'CALL setClassTime(\'' . $tid . '\')';
+    $result = $db-query($query);
+    if($result->num_rows > 0){
+        $ret['datetime'] = $row[0];
+        $ret['verify'] = $row[1];
+    }
+    else{
+        $ret['error'] = 'section mismatch';
+    }
+    return $ret;
 }
 
-/*DELETE*/
-function removeSpaceItemFromCart($spaceItemId){
+function attendanceByClassDate($sectionId, $date){
     global $db;
-    
-    if($spaceItemId > 0){
-        $query = "DELETE from Cart where spaceItemId = $spaceItemId";
-        $db->query($query);
-        $query = "DELETE from SpaceItem where spaceItemId = $spaceItemId";
-        $db->query($query);
+    dbFlush();
+    $ret = array();
+    $query = 'CALL attendanceByClassDate(\'' . $tid . '\', \'' . $date . '\')';
+    $result = $db-query($query);
+    if($result->num_rows > 0)
+    {
+        while($row = $result->fetch_array()){
+            $studentAttendance = new StudentAttendance($row[0], $row[1], $row[2], $row[3]);
+            $studentAttendance->jsonSerialize();
+            $ret[] = $studentAttendance;
+        }
     }
+    else{
+        $ret['error'] = 'No attendance for that date';
+    }
+    return $ret;
 }
 ?>
 

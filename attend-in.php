@@ -17,17 +17,42 @@ catch(Throwable $e){
     exit;
 }
 
-function md5Hash(){
+//Utility functions go here - md5Hash is an example. It's used by other functions, not as part of the API
+function md5Hash($token){
     return true;
 }
 
-function student_first_login(){
+function test(){
+    foreach ($_GET as $key=> $value){
+        $html .= "key = $key, value = $value<br>";
+        $req[$key] = $value;
+        //$req = $_GET['function'];
+    }
+    echo (json_encode($html));
+    echo (json_encode($req));
+}
+
+function get_student_by_tid(){
+    $tid = $_GET['student_tid'];
+    //$student = new Student($tid, null, null, null, null);
+    $student = getStudentByTid($tid);
+    echo (json_encode($student->jsonSerialize()));
+}
+
+
+//Student functions go here
+function student_first_login(){//First time a student logs in, we need to set the token. This may need to be tweaked
     //check to see if username exists first.
     //If it exists, return a null student
     $username = $_GET['loginid'];
     $student = getStudentByLoginid($loginid);
     if($student->get_tid() != null){
-        $student = new Student(null, null, null, null, null);
+        if($student->get_token() != null){
+            $student = new student(null, null, null, null, null, null);
+        }
+        else{
+            $student = updateStudentToken($student, $_GET['token']);
+        }
     }
     //Otherwise, insert and return a new student
     else{
@@ -43,13 +68,29 @@ function student_first_login(){
     echo (json_encode($student->jsonSerialize()));
 }
 
-function professor_first_login(){
+function student_list(){//Allows the student to retrieve a list of classes, so she can choose which to log in for
+
+}
+
+function student_login(){//Allows the student to mark her attendance for the given class
+
+}
+
+
+//Professor functions go here
+function professor_first_login(){//First time a professor logs in, we need to set the token. This may need to be tweaked
     //check to see if username exists first.
-    //If it exists, return a null Professor
+    //If it exists, check to see if the token exists
+    //If it doesn't exist, set the token
     $loginid = $_GET['loginid'];
     $professor = getProfessorByLoginid($loginid);
     if($professor->get_id() != null){
-        $professor = new Professor(null, null, null, null, null, null);
+        if($professor->get_token() != null){
+            $professor = new Professor(null, null, null, null, null, null);
+        }
+        else{
+            $professor = updateProfessorToken($professor, $_GET['token']);
+        }
     }
     //Otherwise, insert and return a new Professor
     else{
@@ -67,11 +108,29 @@ function professor_first_login(){
 }
 
 
-function get_student_by_tid(){
+function professor_class_list(){//Retrieve a list of class sections based on professor's tid
     $tid = $_GET['tid'];
-    //$student = new Student($tid, null, null, null, null);
-    $student = getStudentByTid($tid);
-    echo (json_encode($student->jsonSerialize()));
+    $prof = getProfessorByTid($tid);
+    $token = $prof->get_token();
+    if(!md5Hahs($token)){
+        $r = array('error' => '3');
+    }
+    else{
+        $r = getClassListByProfessorTid($tid);
+    }
+    echo(json_encode($r));    
+}
+
+function set_class(){//Mark the class open for attendance login by students
+
+}
+
+function attendance_by_date(){//Gives list of students presnt/absent on given date
+
+}
+
+function set_attendance(){//Updates attendance record for given student/class/date
+
 }
 
 
