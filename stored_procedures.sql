@@ -62,8 +62,7 @@ CREATE PROCEDURE getStudentByTid(
 
 BEGIN
     SELECT loginid, lastname, firstname, token from Student
-    WHERE tid = _tid
-    and deleted = 0;
+    WHERE tid = _tid;
 END $$
 
 DELIMITER ;
@@ -77,7 +76,6 @@ CREATE PROCEDURE getStudentByLoginid(
 BEGIN
     SELECT tid, loginid, lastname, firstname, token from Student
     WHERE loginid = _loginid
-    and deleted = 0;
 END $$
 
 DELIMITER ;
@@ -90,8 +88,7 @@ CREATE PROCEDURE getProfessorByTid(
 
 BEGIN
     SELECT loginid, title, lastname, firstname, token from Professor
-    WHERE tid = _tid
-    and deleted = 0;
+    WHERE tid = _tid;
 END $$
 
 DELIMITER ;
@@ -105,7 +102,6 @@ CREATE PROCEDURE getProfessorByLoginid(
 BEGIN
     SELECT tid, loginid, title, lastname, firstname, token from Professor
     WHERE loginid = _loginid
-    and deleted = 0;
 END $$
 
 DELIMITER ;
@@ -113,12 +109,13 @@ DELIMITER ;
 DELIMITER $$
 
 CREATE PROCEDURE addCourse(
+    IN _courseid varchar(40),
     IN _coursename varchar(40)
 )
 
 BEGIN
-    INSERT INTO Course(coursename)
-    VALUES (_coursename);
+    INSERT INTO Course(courseid, coursename)
+    VALUES (_courseid, _coursename);
     SELECT LAST_INSERT_ID();
 END $$
 
@@ -133,8 +130,8 @@ CREATE PROCEDURE addSection(
 )
 
 BEGIN
-    INSERT INTO Section(courseid, professorid, sectionid)
-    VALUES (_courseid, _professorid, _sectionid);
+    INSERT INTO Section(courseid, professorid, section)
+    VALUES (_courseid, _professorid, _section);
     SELECT LAST_INSERT_ID();
 END $$
 
@@ -143,13 +140,13 @@ DELIMITER ;
 DELIMITER $$
 
 CREATE PROCEDURE addRoll(
-    in _sectionid integer,
+    IN _sectionid integer,
     IN _studentid integer
 )
 
 BEGIN
     INSERT INTO Roll(sectionid, studentid)
-    VALUES (_sectionid, studentid);
+    VALUES (_sectionid, _studentid);
     SELECT LAST_INSERT_ID();
 END $$
 
@@ -176,49 +173,54 @@ END $$
 
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS addSetCourse;
 DELIMITER $$
 
 CREATE PROCEDURE addSetCourse(
     IN _sectionid integer,
-    IN _professorid float,
+    IN _professorid integer,
     IN _classset datetime,
     IN _verifycode varchar(40)
 )
 
 BEGIN
-    INSERT INTO Login( sectionid, professorid, classset, verifycode)
+    INSERT INTO SetCourse(sectionid, professorid, classset, verifycode)
     VALUES (_sectionid, _professorid, _classset, _verifycode);
     SELECT LAST_INSERT_ID();
 END $$
 
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS getClassListByProfessorTid;
 DELIMITER $$
 
-CREATE PROCEDURE getClassListByProfessorId(
+CREATE PROCEDURE getClassListByProfessorTid(
     IN _professorid integer
 )
 
 BEGIN
-SELECT c.tid, s.tid, c.coursename, s.section
+SELECT c.tid as courseid, c.coursename, s.tid as sectionid, s.section, p.tid as professorid, concat(p.lastname, ', ', p.firstname) as professor
 from Course c INNER JOIN Section s ON
-	c.tid = s.courseid
+	c.tid = s.courseid INNER JOIN Professor p ON
+    s.professorid = p.tid
 WHERE professorid = _professorid;
 END $$
 
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS getClassListByStudentTid;
 DELIMITER $$
 
-CREATE PROCEDURE getClassListByStudentId(
+CREATE PROCEDURE getClassListByStudentTid(
     IN _studentid integer
 )
 
 BEGIN
-SELECT c.tid as corseTid, s.tid as sectionTid, r.studentid as studentTid, c.coursename, s.section
+SELECT c.tid as courseid, c.coursename, s.tid as sectionid, s.section, p.tid as professorid, concat(p.lastname, ', ', p.firstname) as professor
 from Course c INNER JOIN Section s ON
-	c.tid = s.courseid INNER JOIN Roll r ON
-    s.tid = r.sectionid
+	c.tid = s.courseid INNER JOIN Professor p ON
+    s.professorid = p.tid INNER JOIN Roll r ON
+    r.sectionid = s.tid
 WHERE r.studentid = _studentid;
 END $$
 
@@ -244,22 +246,34 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE PROCEDURE setAttendance(IN _sectionid integer, IN _studentid integer)
+CREATE PROCEDURE updateStudentToken(
+    IN _tid integer,
+    IN _token varchar(40)
+)
 
 BEGIN
-SELECT r., l.
-FROM Roll r INNER JOIN Login l ON
-	l.rollid = r.tid
-WHERE @sectionid = _sectionid AND  @studentid = _studentid;
-
-UPDATE Login
-SET result = _result
-WHERE
-rollid = @rollid AND DATE(class_date) = DATE(_classdate);
-
-SELECT loginid FROM Login
-WHERE class_date = _classdate;
+UPDATE Student
+SET token = _token
+WHERE tid = _tid;
+SELECT token from Student WHERE tid = _tid;
 END $$
 
 DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE updateProfessorToken(
+    IN _tid integer,
+    IN _token varchar(40)
+)
+
+BEGIN
+UPDATE Professor
+SET token = _token
+WHERE tid = _tid;
+SELECT token from Student WHERE tid = _tid;
+END $$
+
+DELIMITER ;
+
 
