@@ -5,7 +5,6 @@ require_once "Database.php";
 // get the HTTP method, path and body of the request
 $method = $_SERVER['REQUEST_METHOD'];
 $function = $_GET['function'];
-//console_log("test", false);
 
 //Instead of a switch statement, we can use a try catch block with the name of the function used as variable
 try{
@@ -44,7 +43,7 @@ function get_student_by_tid(){
 function student_first_login(){//First time a student logs in, we need to set the token. This may need to be tweaked
     //check to see if username exists first.
     //If it exists, return a null student
-    $username = $_GET['loginid'];
+    $loginid = $_GET['loginid'];
     $student = getStudentByLoginid($loginid);
     if($student->get_tid() != null){
         if($student->get_token() != null){
@@ -69,10 +68,46 @@ function student_first_login(){//First time a student logs in, we need to set th
 }
 
 function student_list(){//Allows the student to retrieve a list of classes, so she can choose which to log in for
-
+    $tid = $_GET['student_tid'];
+    $student = getStudentByTid($tid);
+    $token = $student->get_token();
+    if(!md5Hash($token)){
+        $r = array('error' => '3');
+    }
+    else{
+        $r = getClassListByStudentTid($tid);
+    }
+    echo(json_encode($r));    
 }
 
 function student_login(){//Allows the student to mark her attendance for the given class
+    $tid = $_GET['student_tid'];
+    $student = getStudentByTid($tid);
+    $token = $student->get_token();
+    if(!md5Hash($token)){
+        $r = array('error' => '3');
+    }
+    else{
+        $sectionid = $_GET['class_tid'];
+        $rollid = getRollidByStudentSection($tid, $sectionid);
+        if($rollid <= 0){
+            $r['error'] = 4;
+        }
+        else{
+            $login = new Login(0, $rollid, $_GET['ip_address'], $_GET['latitude'], $_GET['longitude'], '', date('Y-m-d H:i:s'), 4, $token);
+            // IN _rollid integer,
+            // IN _ipaddress varchar(24),
+            // IN _latitude float,
+            // IN _longitude float,
+            // IN _verifycode varchar(40),
+            // IN _logindate datetime,
+            // IN _result integer,
+            // IN _token varchar(40)
+            $login = addLogin($login);
+            $r['error'] = $login->get_result();
+        }
+    }
+    echo(json_encode($r));    
 
 }
 
@@ -84,8 +119,9 @@ function professor_first_login(){//First time a professor logs in, we need to se
     //If it doesn't exist, set the token
     $loginid = $_GET['loginid'];
     $professor = getProfessorByLoginid($loginid);
-    if($professor->get_id() != null){
-        if($professor->get_token() != null){
+    echo (json_encode($professor->jsonSerialize()));
+    if($professor->get_tid() != null){
+        if($professor->get_token() != ''){
             $professor = new Professor(null, null, null, null, null, null);
         }
         else{
@@ -109,10 +145,10 @@ function professor_first_login(){//First time a professor logs in, we need to se
 
 
 function professor_class_list(){//Retrieve a list of class sections based on professor's tid
-    $tid = $_GET['tid'];
+    $tid = $_GET['professor_tid'];
     $prof = getProfessorByTid($tid);
     $token = $prof->get_token();
-    if(!md5Hahs($token)){
+    if(!md5Hash($token)){
         $r = array('error' => '3');
     }
     else{
@@ -122,10 +158,32 @@ function professor_class_list(){//Retrieve a list of class sections based on pro
 }
 
 function set_class(){//Mark the class open for attendance login by students
-
+    $professor_tid = $_GET['professor_tid'];
+    $prof = getProfessorByTid($professor_tid);
+    $token = $prof->get_token();
+    if(!md5Hash($token)){
+        $r = array('error' => '3');
+        echo(json_encode($r));
+        exit;
+    }
+    else{
+        $setCourse = new SetCourse(0, $_GET['class_tid'], $professor_tid, date("Y-m-d H:i:s"), null);
+        $setCourse = setClass($setCourse);
+        //$r = setClass($setCourse);
+    }
+    try{
+        echo(json_encode($setCourse->jsonSerialize()));
+    }
+    catch(Throwable $t){
+        echo(json_encode($setCourse));
+    }
 }
 
 function attendance_by_date(){//Gives list of students presnt/absent on given date
+
+}
+
+function attendance_by_student(){//Gives list of dates attended by student, missing dates are absences
 
 }
 
