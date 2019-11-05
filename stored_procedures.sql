@@ -242,5 +242,24 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
 
+CREATE PROCEDURE setAttendance(IN _sectionid integer, IN _studentid integer)
+
+BEGIN
+SELECT r., l.
+FROM Roll r INNER JOIN Login l ON
+	l.rollid = r.tid
+WHERE @sectionid = _sectionid AND  @studentid = _studentid;
+
+UPDATE Login
+SET result = _result
+WHERE
+rollid = @rollid AND DATE(class_date) = DATE(_classdate);
+
+SELECT loginid FROM Login
+WHERE class_date = _classdate;
+END $$
+
+DELIMITER ;
 
