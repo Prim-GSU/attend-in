@@ -339,7 +339,61 @@ class ClassList implements \JsonSerializable{
 }
 
 class AttendenceListItem implements \JsonSerializable{
-	private $userid;
+	private $studentid;
+	public function set_studentid($studentid){$this->studentid = $studentid;}
+	public function get_studentid(){return $this->studentid;}
+	private $studentfirstname;
+	public function set_studentfirstname($studnetfirstname){$this->studentfirstname = $studentfirstname;}
+	public function get_studentfirstname(){return $this->studentfirstname;}
+	private $studentlastname;
+	public function set_studentlastname($studnetlastname){$this->studentlastname = $studentlastname;}
+	public function get_studentlastname(){return $this->studentlastname;}
+	private $date;
+	public function set_date($date){$this->date = $date;}
+	public function get_date(){return $this->date;}
+	private $attendance;
+	public function set_attendance($attendance){$this->attendance = $attendance;}
+	public function get_attendance(){return $this->attendance;}
+	public function __construct(){
+		if(func_get_arg(0)){$this->studentid = func_get_arg(0);}
+		if(func_get_arg(1)){$this->studenfirsttname = func_get_arg(1);}
+		if(func_get_arg(2)){$this->studenlasttname = func_get_arg(2);}
+		if(func_get_arg(3)){$this->date = func_get_arg(3);}
+		if(func_get_arg(4)){$this->attendance = func_get_arg(4);}
 }
+public function jsonSerialize()
+{
+	$vars = get_object_vars($this);
+
+	return $vars;
+}
+}
+
+class AttendanceList implements \JsonSerializable{
+	private $coursename;
+	public function set_coursename($coursename){$this->coursename = $coursename;}
+	public function get_coursename(){return $this->coursename;}
+	private $section;
+	public function set_section($section){$this->section = $section;}
+	public function get_section(){return $this->section;}
+	private $date;
+	public function set_date($date){$this->date = $date;}
+	public function get_date(){return $this->date;}
+	private $AttendanceItemList = array();
+	public function set_AttendanceItemList($AttendanceItemList){$this->AttendanceItemList =  $AttendanceItemList;}
+	public function get_AttendanceItemList(){return $this->AttendanceItemList;}
+	public function __construct(){
+		if(func_get_arg(0)){$this->coursename = func_get_arg(0);}
+		if(func_get_arg(1)){$this->section = func_get_arg(1);}
+		if(func_get_arg(2)){$this->date = func_get_arg(2);}
+	}
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
+	}
+}
+
 
 ?>
