@@ -338,4 +338,8 @@ class ClassList implements \JsonSerializable{
 	}
 }
 
+class AttendenceListItem implements \JsonSerializable{
+	private $userid;
+}
+
 ?>
