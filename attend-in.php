@@ -180,7 +180,19 @@ function set_class(){//Mark the class open for attendance login by students
 }
 
 function attendance_by_date(){//Gives list of students presnt/absent on given date
+    $professor_tid = $_GET['professor_tid'];
+    $prof = getProfessorByTid($professor_tid);
+    $token = $prof->get_token();
+    if(!md5Hash($token)){
+        $r = array('error' => '3');
+        echo(json_encode($r));
+        exit;
+    }
+    else{
 
+        $attendanceByClass = attendanceByClassDateAndProfId($_GET['class_tid'], $professor_tid, date("Y-m-d H:i:s"));
+        echo(json_encode($attendanceByClass));
+    }
 }
 
 function attendance_by_student(){//Gives list of dates attended by student, missing dates are absences

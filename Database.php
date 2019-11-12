@@ -205,6 +205,26 @@ function attendanceByClassDate($sectionId, $date){
     return $ret;
 }
 
+function attendanceByClassDateAndProfId($classId,$profId, $date){
+    global $db;
+    dbFlush();
+    $ret = array();
+    $query = 'CALL attendanceByClassDateAndProfId(\'' . $classid . '\',\'' . $profid . '\', \'' . $date . '\')';
+    $result = $db->query($query);
+    if($result->num_rows > 0)
+    {
+        while($row = $result->fetch_array()){
+            $studentAttendance = new StudentAttendance($row[0], $row[1], $row[2], $row[3]);
+            $studentAttendance->jsonSerialize();
+            $ret[] = $studentAttendance;
+        }
+    }
+    else{
+        $ret['error'] = 'No attendance for that date';
+    }
+    return $ret;
+}
+
 function addLogin($login){
     global $db;
     dbFlush();
