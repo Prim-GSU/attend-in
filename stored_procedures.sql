@@ -277,5 +277,25 @@ END $$
 DELIMITER ;
 
 
+DELIMITER $$
 
+CREATE PROCEDURE attendanceByClassDateAndProfId(
+    IN _classid integer,
+    IN _date date,
+    OUT _studentid integer,
+    OUT _name varchar(30),
+    OUT _attendanceCode integer
+)
+
+BEGIN
+SELECT  r.studentid into _studentid, s.lastname+" "+s.firstname into _name, r.attendanceCode into _attendanceCode
+FROM Roll r INNER JOIN Student s ON r.studentid = s.tid
+INNER JOIN section sec ON r.sectionid = sec.tid 
+    LEFT JOIN Login l ON l.rollid = r.tid 
+WHERE s._classid= _classid AND
+    l.logindate = _date;
+
+END $$
+
+DELIMITER ;
 

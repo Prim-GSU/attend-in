@@ -274,7 +274,7 @@ function getRollidByStudentSection($studentid, $sectionid){
     else{
         return -1;
     }
-
 }
+
 ?>
 
