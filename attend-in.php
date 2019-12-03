@@ -180,7 +180,11 @@ function set_class(){//Mark the class open for attendance login by students
 }
 
 function attendance_by_date(){//Gives list of students presnt/absent on given date
+     //get logindate from LOGIN table, get token for that date, getclasslistbystudid but filtered by logindate? stored proc??
     $professor_tid = $_GET['professor_tid'];
+    $date = $_GET['class_date'];
+    $classid = $_GET['class_tid'];
+    
     $prof = getProfessorByTid($professor_tid);
     $token = $prof->get_token();
     if(!md5Hash($token)){
@@ -189,20 +193,75 @@ function attendance_by_date(){//Gives list of students presnt/absent on given da
         exit;
     }
     else{
-
-        $attendanceByClass = attendanceByClassDateAndProfId($_GET['class_tid'], $professor_tid, date("Y-m-d H:i:s"));
+        $attendanceByClass = attendanceByClassDate($classid, $date);
         echo(json_encode($attendanceByClass));
     }
 }
 
-function attendance_by_student(){//Gives list of dates attended by student, missing dates are absences
 
+
+function set_attendance(){//Updates attendance record for given student/class//date
+
+	$classid = $_GET['class_tid'];
+	$profid = $_GET['professor_tid'];
+	$date = $_GET['class_date'];
+	$code = $_GET['attendance_code'];
+	$tid = $_GET['tid'];
+	
+	//get student and student and student login id
+	$studtid = $_GET['student_tid'];
+	echo $studtid . "<br>";
+
+	$student = getStudentByTid($studtid);
+	echo (json_encode($student->jsonSerialize())). "<br>";
+	
+	$token = $student->get_token();
+	echo $token. "<br>";
+	
+	//if student token is valid, 
+	if(md5Hash($token)){
+			echo " token matches <br>";
+			
+			$loginid = $tid;
+			
+			$login = new Login(0, 
+			$_GET['rollid'], 
+			$_GET['ipaddress'], 
+			$_GET['latitude'], 
+			$_GET['longitude'], 
+			$_GET['verifycode'], 
+			$_GET['logindate'], 
+			$_GET['result'], 
+			$_GET['token']);
+    	}		
+    	
+    else{
+		echo "no token <br>";
+		$loginid =0;
+        $login = new Login(
+			null, null, null, null, null, null, null, null, null);
+    }
+	 echo (json_encode($loginid));
+	echo "<br> finished";
 }
 
-function set_attendance(){//Updates attendance record for given student/class/date
+function attendance_by_student() {
+	$datetime = $_GET['hashtime'];
+	$md5 = $_GET['md5_hash'];
+	$profid = $_GET['professor_id'];
+	$classid = $_GET['class_tid'];
+	$studid = $_GET['student_tid'];
+	echo $studid;
+    
+	$student = getStudentByTid($studid); 
 
+	$r = attendanceByStudent($student, $classid);
+	echo(json_encode($r));
 }
 
+//echo (json_encode($result). "\n") ;
+//echo "\nI'm still running, though!\n";
+//?function=student_first_login&login_id=sfassnacht1&username=what_is_this&last_name=fassnacht&first_name=steven&token=fuzzywuzzy
 
 //echo (json_encode($result). "\n") ;
 //echo "\nI'm still running, though!\n";

@@ -127,7 +127,7 @@ function getProfessorByLoginid($loginid){
 function getClassListByProfessorTid($tid){
     global $db;
     dbFlush();
-    $query = 'CALL getClassListByStudentTid(\'' . $tid . '\')';
+    $query = 'CALL getClassListByProfessorTid(\'' . $tid . '\')';
     $result = $db->query($query);
     $classList = new ClassList($tid);
     $ret = $classList->get_classObjectList();
@@ -189,40 +189,32 @@ function attendanceByClassDate($sectionId, $date){
     global $db;
     dbFlush();
     $ret = array();
-    $query = 'CALL attendanceByClassDate(\'' . $tid . '\', \'' . $date . '\')';
-    $result = $db->query($query);
-    if($result->num_rows > 0)
-    {
-        while($row = $result->fetch_array()){
-            $studentAttendance = new StudentAttendance($row[0], $row[1], $row[2], $row[3]);
-            $studentAttendance->jsonSerialize();
-            $ret[] = $studentAttendance;
-        }
-    }
-    else{
-        $ret['error'] = 'No attendance for that date';
-    }
-    return $ret;
-}
-
-function attendanceByClassDateAndProfId($classId,$profId, $date){
+    
+    
+    $query2 = 'CALL getCourseInfo(\''. null . '\', \'' . $sectionId . '\', \'' . $date . '\')';
+	$result2 = $db->query($query2);
+    $row = $result2->fetch_array();
+    $attendanceList = new AttendanceList($row[0], $row[1], $row[2], $row[3]);
+    
     global $db;
-    dbFlush();
-    $ret = array();
-    $query = 'CALL attendanceByClassDateAndProfId(\'' . $classid . '\',\'' . $profid . '\', \'' . $date . '\')';
+	dbFlush();
+	
+    $query = 'CALL getAttendanceBySectionDate(\'' . $sectionId . '\', \'' . $date . '\')';
     $result = $db->query($query);
+    $ret = $attendanceList->get_AttendanceItemList();
     if($result->num_rows > 0)
     {
         while($row = $result->fetch_array()){
-            $studentAttendance = new StudentAttendance($row[0], $row[1], $row[2], $row[3]);
-            $studentAttendance->jsonSerialize();
-            $ret[] = $studentAttendance;
+            $attendanceListItem = new AttendanceListItem($row[0], $row[1], $row[2], $row[3], $row[4], $row[5]);
+            $attendanceListItem->jsonSerialize();
+            $ret[] =  $attendanceListItem;
         }
     }
     else{
         $ret['error'] = 'No attendance for that date';
     }
-    return $ret;
+    $attendanceList->set_AttendanceItemList($ret);
+    return $attendanceList;
 }
 
 function addLogin($login){
@@ -274,7 +266,38 @@ function getRollidByStudentSection($studentid, $sectionid){
     else{
         return -1;
     }
+
 }
 
+function attendanceByStudent($student, $sectionid){
+	global $db;
+	dbFlush();
+	$ret = array();
+	
+	$query2 = 'CALL getCourseInfo(\''. $student->get_tid() . '\', \'' . $sectionid . '\', \'' . null . '\')';
+	$result2 = $db->query($query2);
+    $row = $result2->fetch_array();
+    $attendanceList = new AttendanceList($row[0], $row[1], $row[2], $row[3]);
+    
+    global $db;
+	dbFlush();
+     
+	$query = 'CALL getAttendancebyStudent(\''. $student->get_tid() . '\', \''. $sectionid . '\')';
+	$result = $db->query($query);
+    $ret = $attendanceList->get_AttendanceItemList();        
+    if($result->num_rows > 0){
+        while($row = $result->fetch_array()){
+            $attendanceListItem = new AttendanceListItem($row[0], $row[1], $row[2], $row[3], $row[4], $row[5]);
+            //$section->jsonSerialize();
+            $ret[] = $attendanceListItem;
+        }
+    }
+    else{
+        $ret['error'] = 'No attendance for this student';
+    }
+    $attendanceList->set_AttendanceItemList($ret);
+    return $attendanceList;
+	
+}
 ?>
 
