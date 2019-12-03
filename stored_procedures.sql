@@ -1,20 +1,18 @@
+
 --framework for SP
 /*
 DELIMITER $$
-
 CREATE PROCEDURE name(
     IN var1 varchar(15),
     IN var2 varchar(40),
     IN var3 integer,
     IN fn float,
 )
-
 BEGIN
     COMMAND Table(field1, field2, field3, field4)
     VALUES (var1, var2, var3,var4);
     SELECT return_info --LAST_INSERT_ID() object from table, etc;
 END $$
-
 DELIMITER ;
 --End
 */
@@ -226,6 +224,7 @@ END $$
 
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS getAttendanceBySectionDate;
 DELIMITER $$
 
 CREATE PROCEDURE getAttendanceBySectionDate(
@@ -234,12 +233,14 @@ CREATE PROCEDURE getAttendanceBySectionDate(
 )
 
 BEGIN
-SELECT  r.studentid, s.lastname, s.firstname, l.result
-FROM Roll r INNER JOIN Student s ON
-    r.studentid = s.tid LEFT JOIN Login l ON
-    l.rollid = r.tid
+
+SELECT r.studentid, s.firstname, s.lastname, l.result
+FROM Roll r
+INNER JOIN Student s ON r.studentid = s.tid
+LEFT JOIN Login l ON l.rollid = r.tid
 WHERE r.sectionid = _sectionid AND
-    l.logindate = _date;
+    ((NOT EXISTS (SELECT 1 FROM Login l2 WHERE l2.rollid = r.tid))
+    OR Date(l.logindate) = _date);
 END $$
 
 DELIMITER ;
@@ -323,4 +324,3 @@ WHERE s._classid= _classid AND
 END $$
 
 DELIMITER ;
-
