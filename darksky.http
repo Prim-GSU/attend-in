@@ -1,0 +1,1 @@
+GET https://api.darksky.net/forecast/e44182149e9c5cbc4d58c6ef25e7125d/39.1031,-84.5120,1577836800?exclude=currently,hourly  HTTP/1.1

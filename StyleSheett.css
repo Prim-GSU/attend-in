@@ -1,0 +1,16 @@
+body {
+    background-color: whitesmoke;
+  }
+  h1 {
+    color:black;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+  
+  p {
+    color: red;
+  }
+  #heading{
+    text-align: center;
+  }
+
+ 

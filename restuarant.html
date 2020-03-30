@@ -1,0 +1,56 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--CSC4370/6370 in-class form processing 1-->
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Henry Fav Restaurant</title>
+</head>
+
+<body>
+  <form action="Order_me.php" method="post">
+    <h2>Henry 101 Company</h2>
+    <p>Please place your order for the restaurant listed</p>
+    <table border="0">
+      <tr bgcolor="#cccccc">
+        <td width="150">Item</td>
+        <td width="15">Quantity</td>
+        <td width="50">Price</td>
+      </tr>
+      <tr>
+        <td>Bones</td>
+        <td align="center"><input type="text" name="Plate1" size="3" maxlength="3"></td>
+        <td>$2,100</td>
+      </tr>
+      <tr>
+        <td>STK</td>
+        <td align="center"><input type="text" name="Plate2" size="3" maxlength="3"></td>
+        <td>$199</td>
+      </tr>
+      <tr>
+        <td>
+          Chops Lobster Bar</td>
+        <td align="center"><input type="text" name="Plate3" size="3" maxlength="3"></td>
+        <td>$899</td>
+      </tr>
+      <tr>
+        <td>How did you find Henry's Fav menu?</td>
+        <td><select name="find">
+            <option value="a">Google</option>
+            <option value="b">Web ad</option>
+            <option value="c">TV ad</option>
+            <option value="d">Word of mouth</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center"><input type="submit" value="Submit Order"></td>
+      </tr>
+    </table>
+    <p>Sorry, but we need to add the sales tax of 10% </p>
+
+    <br /> Click Reset to clear the form <input type="reset" />
+  </form>
+</body>
+
+</html>

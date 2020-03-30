@@ -1,0 +1,100 @@
+* {
+    box-sizing: border-box;
+  }
+
+  body{
+    background-color: rgba(233, 216, 216, 0.445);
+    color: #11021ac0;
+  }
+
+  #heading{
+    text-align: center;
+    font-size: 30px;
+    background-color: rgb(29, 9, 9);
+    margin: 0px 0px 0px 0px;
+    padding: 10px 0px 0px 0px;
+  }
+  #heading > h1{
+    background-color: inherit;
+    color: floralwhite;
+    margin: inherit;
+    padding: 0px 0px 0px 0px;
+  }
+  #subheading,#subheading > p{
+    text-align: center;
+    font-size: 25px;
+    margin: inherit;
+    background-color: inherit;
+    color: floralwhite;
+  }
+  
+  /* Create three unequal columns that floats next to each other */
+  .column {
+    float: left;
+    padding: 0px 0px 0px 0px;
+  }
+  
+  .left, .right {
+    width: 25%;
+  }
+  
+  .middle {
+    width: 50%;
+    overflow: auto;
+  }
+  
+  #headshot{
+    width: 40%;
+    float: left;
+    padding: 10px;
+  }
+  #headshot>img{
+    width: 100%;
+  }
+
+  #aboutme{
+    float: left;
+    width: 60%;
+    padding-right: 10px;
+  }
+
+  #aboutme > p{
+    text-align: justify;
+    font-size: 16px;
+  }
+
+  .middle > p{
+    text-align: justify;
+    font-size: 25px;
+  }
+
+  .links{
+    width: 100%;
+  }
+
+  .links th{
+    text-align: left;
+
+  }
+  
+  
+/* .links tr:nth-child(even) {
+  background-color: rgba(235, 209, 209, 0.445);
+} */
+  #sunheading ul,.links ul{
+    list-style-type: none;
+  }
+
+  .sublist{
+    font-weight: bolder;
+  }
+
+  .externallinks{
+    list-style-type: none;
+  }
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
